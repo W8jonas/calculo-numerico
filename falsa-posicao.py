@@ -1,9 +1,10 @@
 
 
-def falsa_posicao(f, a, b, tol=1e-3, max_iter=100):
+def falsa_posicao(f, a, b, tol=1e-5, max_iter=100):
     iteracoes = 0
     
     if (f(a) * f(b) > 0):
+        # não tem raiz
         return None, 0
 
     while iteracoes < max_iter:
@@ -20,7 +21,7 @@ def falsa_posicao(f, a, b, tol=1e-3, max_iter=100):
 
         print('| {:10} | {:<20} | {:<25} | {:<25} | {:<25} | {:<25}|'.format(iteracoes, pontoMedio, f(a), f(b), erro_absoluto, erro_relativo))
 
-        if erro_absoluto < tol:
+        if erro_relativo < tol:
             return pontoMedio, iteracoes
         
         if (fa * f_pontoMedio > 0):
@@ -28,6 +29,7 @@ def falsa_posicao(f, a, b, tol=1e-3, max_iter=100):
         else:
             b = pontoMedio
         iteracoes += 1
+    
     return pontoMedio, iteracoes
 
 
@@ -44,4 +46,4 @@ print('| {:^10} | {:^20} | {:^25} | {:^25} | {:^25} | {:^25}|'.format("iteracoes
 
 raiz, iteracoes = falsa_posicao(f, a, b)
 
-print("Convergiu em ", iteracoes, " para ", raiz)
+print("Convergiu em ", iteracoes, " iterações para ", raiz)
