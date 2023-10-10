@@ -8,15 +8,15 @@ def quase_newton(f, x0, x1, tol=1e-6, max_iter=100):
     while iteracoes < max_iter:
         iteracoes += 1
         
-        aproximacao_derivada = ( f(x1 + (x0 - x1)) - f(x1) ) / (x0 - x1)
-        x_next = x - f(x)/aproximacao_derivada
+        aproximacao_derivada = ( f(x + (x_prev - x)) - f(x) ) / (x_prev - x)
+        x_next = x - f(x) / aproximacao_derivada
 
         erro_absoluto = abs(x_next - x)
         erro_relativo = erro_absoluto / abs(x_next)
 
         print('| {:10} | {:<20} | {:<25} | {:<25} | {:<25} | {:<25}|'.format(iteracoes, x_next, x_prev, f(x), erro_absoluto, erro_relativo))
 
-        if erro_absoluto < tol:
+        if erro_relativo < tol:
             return x_next, iteracoes
         
         x_prev = x
