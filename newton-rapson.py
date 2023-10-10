@@ -15,7 +15,7 @@ def newton_raphson(f, df, x0, tol=1e-6, max_iter=100):
 
         print('| {:10} | {:<20} | {:<25} | {:<25} | {:<25} | {:<25}|'.format(iteracoes, x_next, f(x_next), df(x_next), erro_absoluto, erro_relativo))
 
-        if erro_absoluto < tol:
+        if erro_relativo < tol:
             return x_next, iteracoes
         
         x = x_next
