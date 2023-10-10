@@ -1,9 +1,10 @@
 
 
-def bissecao(f, a, b, tol=1e-2, max_iter=100):
+def bissecao(f, a, b, tol=1e-5, max_iter=100):
     iteracoes = 0
     
     if (f(a) * f(b) > 0):
+        # não tem raiz
         return None, 0
 
     while iteracoes < max_iter:
@@ -16,7 +17,7 @@ def bissecao(f, a, b, tol=1e-2, max_iter=100):
 
         print('| {:10} | {:<20} | {:<25} | {:<25} | {:<25} | {:<25}|'.format(iteracoes, pontoMedio, f(a), f(b), erro_absoluto, erro_relativo))
 
-        if erro_absoluto < tol:
+        if erro_relativo < tol:
             return pontoMedio, iteracoes
         
         if (f(a) * f_pontoMedio > 0):
