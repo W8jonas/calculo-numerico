@@ -31,8 +31,42 @@ def testa_se_diagonalmente_dominante(matriz):
     return True
 
 
+def gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
 
-def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=10):
+    if (testa_se_diagonalmente_dominante(matriz) == False):
+        print("Não possui diagonal dominante")
+        return None
+    
+    n = len(matriz)
+    x = x0.copy()
+    
+    print("inicio while", matriz, '\t', b, '\t', x0)
+
+    iteracoes = 0
+    while iteracoes < max_iter:
+        iteracoes += 1
+        x_antigo = x.copy()
+
+        for lin in range(n):
+            soma = 0
+            for col in range(n):
+                if col != lin:
+                    soma += A[lin][col] * x[col] / A[lin][lin]
+                    
+                x[lin] = (B[lin] / A[lin][lin]) - soma
+
+        # Cálculo da diferença relativa em norma infinito
+        diff_rel = max(abs(x[i] - x_antigo[i]) / abs(x[i]) for i in range(n))
+        
+        print(iteracoes, x_antigo, '    \t', diff_rel)
+        if diff_rel < epsilon:
+            return x
+        
+    return None  # Falha
+
+
+def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=100):
+    print('gauss_jacobi')
 
     if (testa_se_diagonalmente_dominante(matriz) == False):
         print("Não possui diagonal dominante")
@@ -53,7 +87,7 @@ def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=10):
             for col in range(n):
                 if col != lin:
                     soma += A[lin][col] * x_antigo[col] / A[lin][lin]
-
+                    
                 x[lin] = (B[lin] / A[lin][lin]) - soma
 
         # Cálculo da diferença relativa em norma infinito
@@ -86,6 +120,15 @@ imprimir_matriz(A)
 
 print("\nVetor inicial:")
 print(x0)
+
+# Resolve pelo método de Gauss-Seidel
+solucao_gauss_seidel = gauss_seidel(A, B, x0)
+
+if solucao_gauss_seidel:
+    print("\nSolução pelo método de Gauss-Seidel:")
+    print(solucao_gauss_seidel)
+else:
+    print("\nFalha ao encontrar a solução pelo método de Gauss-Seidel.")
 
 # Resolve pelo método de Jacobi
 solucao_jacobi = gauss_jacobi(A, B, x0)
