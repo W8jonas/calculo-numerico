@@ -40,8 +40,6 @@ def gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
     n = len(matriz)
     x = x0.copy()
     
-    print("inicio while", matriz, '\t', b, '\t', x0)
-
     iteracoes = 0
     while iteracoes < max_iter:
         iteracoes += 1
@@ -66,7 +64,6 @@ def gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
 
 
 def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=100):
-    print('gauss_jacobi')
 
     if (testa_se_diagonalmente_dominante(matriz) == False):
         print("Não possui diagonal dominante")
@@ -75,8 +72,6 @@ def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=100):
     n = len(matriz)
     x = x0.copy()
     
-    print("inicio while", matriz, '\t', b, '\t', x0)
-
     iteracoes = 0
     while iteracoes < max_iter:
         iteracoes += 1
@@ -111,7 +106,7 @@ imprimir_matriz(matriz)
 A = [[matriz[i][j] for j in range(n)] for i in range(n)]
 B = [matriz[i][n] for i in range(n)]
 
-# Define o vetor inicial (substitua com sua própria inicialização)
+# Define o vetor inicial
 x0 = [0] * n
 
 # Ax = b
