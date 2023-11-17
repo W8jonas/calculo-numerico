@@ -21,20 +21,30 @@ def imprimir_matriz(matriz):
 def pivotear_matriz(matriz):
     n = len(matriz)
     
-    for k in range(n - 1):
-        # Pivoteamento parcial por colunas
+    print('')
+    for k in range(n):
+        # Pivoteamento
         max_element = abs(matriz[k][k])
         max_row = k
-        for i in range(k + 1, n):
+
+        for i in range(k, n):
+
+            print(i, k, '\t', matriz[i][k], max_element, abs(matriz[i][k]) > max_element)
+
             if abs(matriz[i][k]) > max_element:
                 max_element = abs(matriz[i][k])
                 max_row = i
-        
+
         # Faz a troca de posição
         if max_row != k:
             temp = matriz[k]
             matriz[k] = matriz[max_row]
             matriz[max_row] = temp
+        
+        print('')
+        print('Nova matriz', matriz)
+        print('')
+    print('')
     
     return matriz
 
@@ -43,12 +53,15 @@ def pivotear_matriz(matriz):
 def eliminacao_gauss(matriz):
     n = len(matriz)
 
+    print('eliminacao_gauss')
+    imprimir_matriz(matriz)
+
     # Eliminação Gauss
     for k in range(n - 1):
         for i in range(k + 1, n):
-            factor = matriz[i][k] / matriz[k][k]
+            fator = matriz[i][k] / matriz[k][k]
             for j in range(k, n + 1):
-                matriz[i][j] -= factor * matriz[k][j]
+                matriz[i][j] -= fator * matriz[k][j]
     
     # Verifica se a matriz é singular
     for i in range(n):
@@ -75,20 +88,14 @@ n, matriz = ler_matriz_de_arquivo()
 print("Matriz original:")
 imprimir_matriz(matriz)
 
-# Duplicando a matriz / para cada linha row, preencher com o valor de cada linha da matriz
-matriz_pivoteada = [row[:] for row in matriz]
-matriz_pivoteada = pivotear_matriz(matriz_pivoteada)
 
-matriz_escalada = [row[:] for row in matriz]
-solucao = eliminacao_gauss(matriz_escalada)
+matriz_pivoteada = pivotear_matriz(matriz)
+solucao = eliminacao_gauss(matriz_pivoteada)
 
 
 if solucao:
     print("\nMatriz pivoteada:")
     imprimir_matriz(matriz_pivoteada)
-    
-    print("\nMatriz escalonada:")
-    imprimir_matriz(matriz_escalada)
     
     print("\nVetor de solução:", solucao)
 else:
