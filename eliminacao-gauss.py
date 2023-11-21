@@ -21,16 +21,12 @@ def imprimir_matriz(matriz):
 def pivotear_matriz(matriz):
     n = len(matriz)
     
-    print('')
     for k in range(n):
         # Pivoteamento
         max_element = abs(matriz[k][k])
         max_row = k
 
         for i in range(k, n):
-
-            print(i, k, '\t', matriz[i][k], max_element, abs(matriz[i][k]) > max_element)
-
             if abs(matriz[i][k]) > max_element:
                 max_element = abs(matriz[i][k])
                 max_row = i
@@ -40,11 +36,7 @@ def pivotear_matriz(matriz):
             temp = matriz[k]
             matriz[k] = matriz[max_row]
             matriz[max_row] = temp
-        
-        print('')
-        print('Nova matriz', matriz)
-        print('')
-    print('')
+
     
     return matriz
 
