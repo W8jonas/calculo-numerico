@@ -1,10 +1,9 @@
 
 
-def falsa_posicao(f, a, b, tol=1e-5, max_iter=100):
+def falsa_posicao(f, a, b, tol=1e-3, max_iter=100):
     iteracoes = 0
     
     if (f(a) * f(b) > 0):
-        # não tem raiz
         return None, 0
 
     while iteracoes < max_iter:
@@ -29,7 +28,6 @@ def falsa_posicao(f, a, b, tol=1e-5, max_iter=100):
         else:
             b = pontoMedio
         iteracoes += 1
-    
     return pontoMedio, iteracoes
 
 

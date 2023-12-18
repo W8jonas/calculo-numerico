@@ -1,10 +1,9 @@
 
 
-def bissecao(f, a, b, tol=1e-5, max_iter=100):
+def bissecao(f, a, b, tol=1e-2, max_iter=100):
     iteracoes = 0
     
     if (f(a) * f(b) > 0):
-        # não tem raiz
         return None, 0
 
     while iteracoes < max_iter:
