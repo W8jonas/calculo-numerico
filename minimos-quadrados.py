@@ -1,3 +1,4 @@
+import math
 
 
 def ler_dados_de_arquivo():
@@ -21,18 +22,20 @@ def imprimir_array(array):
     print("\n")
 
 
-def imprimir_resultado(coeficientes, tipo="linear"):
+def imprimir_resultado(coeficientes, desvio_padrao, tipo="linear"):
     print("\n")
     print("Coeficientes:", coeficientes)
-    print("Função:")
+    print("Função", tipo, ':')
     if (tipo == "linear"):
         print(f"{coeficientes[0]}x + {coeficientes[1]}")
 
     if (tipo == "quadratica"):
         print(f"{coeficientes[2]}x² + {coeficientes[1]}x + {coeficientes[0]}")
 
-    print("\n")
-    print(f"Raiz da média quadrática dos resíduos (RMSE): {rmse} \n\n\n")
+    if (tipo == "exponencial-simples"):
+        print(f"{coeficientes[0]} e^{coeficientes[1]}x")
+
+    print(f"Desvio padrao: {desvio_padrao} \n\n\n")
 
 
 
@@ -89,9 +92,9 @@ def minimos_quadrados_linear(num_pontos, pontos):
     residuos = [yi - y_predi for yi, y_predi in zip(y, y_pred)]
 
     # Calcula a raiz da média quadrática dos resíduos
-    rmse = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
+    desvio_padrao = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
 
-    return a0, a1, rmse
+    return [a0, a1], desvio_padrao
 
 
 def calcular_regressao_quadratica(num_pontos, pontos):
@@ -134,41 +137,30 @@ def calcular_regressao_quadratica(num_pontos, pontos):
         residuos.append(y[i] - y_pred[i])
 
     # Calcula a raiz da média quadrática dos resíduos
-    rmse = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
+    desvio_padrao = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
 
-    return coeficientes, rmse
+    return coeficientes, desvio_padrao
 
 
-
-def minimos_quadrados_expo(num_pontos, pontos):
+def minimos_quadrados_exponencial(num_pontos, pontos):
     x = [ponto[0] for ponto in pontos]
     y = [ponto[1] for ponto in pontos]
 
-    somatorio_x = sum(x)
-    somatorio_y = sum(y)
-    somatorio_x2 = sum(xi**2 for xi in x)
+    # Aplica o logaritmo natural aos valores de y para linearizar
+    y_log = [math.log(yi) for yi in y]
 
-    somatorio_xy = 0
-    for xy in pontos:
-        somatorio_xy += xy[0] * xy[1]
+    novos_pontos = []
+    for i in range(num_pontos):
+        novos_pontos.append([x[i], y_log[i]])
 
+    # Calcula os coeficientes a0' e a1' com a função linearizada
+    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, novos_pontos)
 
-    # Calcula os coeficientes a0 e a1
-    a1 = (num_pontos * somatorio_xy - somatorio_x * somatorio_y) / (num_pontos * somatorio_x2 - somatorio_x**2)
-    a0 = (somatorio_y - a1 * somatorio_x) / num_pontos
+    # Converte a0' para a0 e mantém a1 inalterado
+    a0 = math.exp(coeficientes_log[0])
+    a1 = coeficientes_log[1]
 
-    # Calcula os valores preditos y_pred
-    y_pred = [a0 + a1 * xi for xi in x]
-
-    # Calcula os resíduos
-    residuos = [yi - y_predi for yi, y_predi in zip(y, y_pred)]
-
-    # Calcula a raiz da média quadrática dos resíduos
-    rmse = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
-
-    return a0, a1, rmse
-
-
+    return [a0, a1], desvio_padrao
 
 
 n, pontosXY = ler_dados_de_arquivo()
@@ -177,14 +169,14 @@ print("Pontos lidos:")
 imprimir_array(pontosXY)
 
 
-a0, a1, rmse = minimos_quadrados_linear(n, pontosXY)
-imprimir_resultado([a0, a1], rmse)
+coeficientes, desvio_padrao = minimos_quadrados_linear(n, pontosXY)
+imprimir_resultado(coeficientes, desvio_padrao)
 
 
-coeficientes, rmse = calcular_regressao_quadratica(n, pontosXY)
-imprimir_resultado(coeficientes, rmse, "quadratica")
+coeficientes, desvio_padrao = calcular_regressao_quadratica(n, pontosXY)
+imprimir_resultado(coeficientes, desvio_padrao, "quadratica")
 
 
-coeficientes, rmse = minimos_quadrados_expo(n, pontosXY)
-imprimir_resultado(coeficientes, rmse, "expo")
+coeficientes, desvio_padrao = minimos_quadrados_exponencial(n, pontosXY)
+imprimir_resultado(coeficientes, desvio_padrao, "exponencial-simples")
 
