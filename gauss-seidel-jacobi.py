@@ -49,9 +49,9 @@ def gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
             soma = 0
             for col in range(n):
                 if col != lin:
-                    soma += A[lin][col] * x[col] / A[lin][lin]
+                    soma += matriz[lin][col] * x[col] / matriz[lin][lin]
                     
-                x[lin] = (B[lin] / A[lin][lin]) - soma
+                x[lin] = (b[lin] / matriz[lin][lin]) - soma
 
         # Cálculo da diferença relativa em norma infinito
         diff_rel = max(abs(x[i] - x_antigo[i]) / abs(x[i]) for i in range(n))
@@ -81,9 +81,9 @@ def gauss_jacobi(matriz, b, x0, epsilon=1e-5, max_iter=100):
             soma = 0
             for col in range(n):
                 if col != lin:
-                    soma += A[lin][col] * x_antigo[col] / A[lin][lin]
+                    soma += matriz[lin][col] * x_antigo[col] / matriz[lin][lin]
                     
-                x[lin] = (B[lin] / A[lin][lin]) - soma
+                x[lin] = (b[lin] / matriz[lin][lin]) - soma
 
         # Cálculo da diferença relativa em norma infinito
         diff_rel = max(abs(x[i] - x_antigo[i]) / abs(x[i]) for i in range(n))
