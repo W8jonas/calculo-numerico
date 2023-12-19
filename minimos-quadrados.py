@@ -35,7 +35,11 @@ def imprimir_resultado(coeficientes, desvio_padrao, tipo="linear"):
     if (tipo == "exponencial-simples"):
         print(f"{coeficientes[0]} e^{coeficientes[1]}x")
 
-    print(f"Desvio padrao: {desvio_padrao} \n\n\n")
+    if (tipo == "exponencial-produto"):
+        print(f"{coeficientes[0]} xe^{coeficientes[1]}x")
+
+
+    print(f"Desvio padrao: {desvio_padrao} \n\n")
 
 
 
@@ -163,6 +167,50 @@ def minimos_quadrados_exponencial(num_pontos, pontos):
     return [a0, a1], desvio_padrao
 
 
+def minimos_quadrados_produto_exponencial(num_pontos, pontos):
+    x = [ponto[0] for ponto in pontos]
+    y = [ponto[1] for ponto in pontos]
+
+    # Aplica o logaritmo natural aos valores de x e y para linearizar
+    x_log = [math.log(xi) for xi in x]
+    y_log = [math.log(yi) for yi in y]
+
+    novos_pontos = []
+    for i in range(num_pontos):
+        novos_pontos.append([x_log[i], y_log[i]])
+
+    # Calcula os coeficientes a0' e a1' com a função linearizada
+    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, novos_pontos)
+
+    # Converte a0' para a0 e mantém a1 inalterado
+    a0 = math.exp(coeficientes_log[0])
+    a1 = coeficientes_log[1]
+
+    return [a0, a1], desvio_padrao
+
+
+def minimos_quadrados_soma_exponencial(num_pontos, pontos):
+    x = [ponto[0] for ponto in pontos]
+    y = [ponto[1] for ponto in pontos]
+
+    # Aplica o logaritmo natural aos valores de x e y para linearizar
+    x_log = [math.log(xi) for xi in x]
+    y_log = [math.log(yi) for yi in y]
+
+    novos_pontos = []
+    for i in range(num_pontos):
+        novos_pontos.append([x_log[i], y_log[i]])
+
+    # Calcula os coeficientes a0' e a1' com a função linearizada
+    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, novos_pontos)
+
+    # Converte a0' para a0 e mantém a1 inalterado
+    a0 = math.exp(coeficientes_log[0])
+    a1 = coeficientes_log[1]
+
+    return [a0, a1], desvio_padrao
+
+
 n, pontosXY = ler_dados_de_arquivo()
 
 print("Pontos lidos:")
@@ -179,4 +227,12 @@ imprimir_resultado(coeficientes, desvio_padrao, "quadratica")
 
 coeficientes, desvio_padrao = minimos_quadrados_exponencial(n, pontosXY)
 imprimir_resultado(coeficientes, desvio_padrao, "exponencial-simples")
+
+
+coeficientes, desvio = minimos_quadrados_produto_exponencial(n, pontosXY)
+imprimir_resultado(coeficientes, desvio, "exponencial-produto")
+
+
+coeficientes, desvio = minimos_quadrados_soma_exponencial(n, pontosXY)
+imprimir_resultado(coeficientes, desvio, "exponencial-simples")
 
