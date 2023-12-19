@@ -24,8 +24,8 @@ def imprimir_array(array):
 
 def imprimir_resultado(coeficientes, desvio_padrao, tipo="linear"):
     print("\n")
+    print("Função", tipo)
     print("Coeficientes:", coeficientes)
-    print("Função", tipo, ':')
     if (tipo == "linear"):
         print(f"{coeficientes[0]}x + {coeficientes[1]}")
 
@@ -193,22 +193,59 @@ def minimos_quadrados_soma_exponencial(num_pontos, pontos):
     x = [ponto[0] for ponto in pontos]
     y = [ponto[1] for ponto in pontos]
 
-    # Aplica o logaritmo natural aos valores de x e y para linearizar
-    x_log = [math.log(xi) for xi in x]
-    y_log = [math.log(yi) for yi in y]
+    # Linearização do termo a0e^x
+    exp_positivo_linearizado = [math.log(a0) - xi for xi, a0 in zip(x, y)]
 
-    novos_pontos = []
+    # Linearização do termo a1e^{-x}
+    exp_negativo_linearizado = [math.log(a1) - xi for xi, a1 in zip(x, y)]
+
+    # Construção da matriz X
+    X = [[1, xi] for xi in x]
+
+    # Adição das partes linearizadas à matriz X
     for i in range(num_pontos):
-        novos_pontos.append([x_log[i], y_log[i]])
+        X[i].append(exp_positivo_linearizado[i])
+        X[i].append(exp_negativo_linearizado[i])
 
-    # Calcula os coeficientes a0' e a1' com a função linearizada
-    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, novos_pontos)
+    print('X', X)
+    # Calcula os coeficientes a0', a1', a2'
+    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, X, y)
 
-    # Converte a0' para a0 e mantém a1 inalterado
+    # Converte a0' e a1' para a0 e a1
     a0 = math.exp(coeficientes_log[0])
     a1 = coeficientes_log[1]
 
     return [a0, a1], desvio_padrao
+
+
+def minimos_quadrados_exponencial_inversa(num_pontos, pontos):
+    x = [ponto[0] for ponto in pontos]
+    y = [ponto[1] for ponto in pontos]
+
+    # Linearização do termo a0e^x
+    exp_positivo_linearizado = [math.log(a0) - xi for xi, a0 in zip(x, y)]
+
+    # Linearização do termo a1e^{-x}
+    exp_negativo_linearizado = [math.log(a1) - xi for xi, a1 in zip(x, y)]
+
+    # Construção da matriz X
+    X = [[1, xi] for xi in x]
+
+    # Adição das partes linearizadas à matriz X
+    for i in range(num_pontos):
+        X[i].append(exp_positivo_linearizado[i])
+        X[i].append(exp_negativo_linearizado[i])
+
+    print('X', X)
+    # Calcula os coeficientes a0', a1', a2'
+    coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, X, y)
+
+    # Converte a0' e a1' para a0 e a1
+    a0 = math.exp(coeficientes_log[0])
+    a1 = coeficientes_log[1]
+
+    return [a0, a1], desvio_padrao
+
 
 
 n, pontosXY = ler_dados_de_arquivo()
@@ -234,5 +271,9 @@ imprimir_resultado(coeficientes, desvio, "exponencial-produto")
 
 
 coeficientes, desvio = minimos_quadrados_soma_exponencial(n, pontosXY)
-imprimir_resultado(coeficientes, desvio, "exponencial-simples")
+imprimir_resultado(coeficientes, desvio, "exponencial-soma")
+
+
+coeficientes, desvio = minimos_quadrados_exponencial_inversa(n, pontosXY)
+imprimir_resultado(coeficientes, desvio, "exponencial-inversa")
 
