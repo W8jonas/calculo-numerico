@@ -27,7 +27,7 @@ def imprimir_resultado(coeficientes, desvio_padrao, tipo="linear"):
     print("Função", tipo)
     print("Coeficientes:", coeficientes)
     if (tipo == "linear"):
-        print(f"{coeficientes[0]}x + {coeficientes[1]}")
+        print(f"{coeficientes[1]}x + {coeficientes[0]}")
 
     if (tipo == "quadratica"):
         print(f"{coeficientes[2]}x² + {coeficientes[1]}x + {coeficientes[0]}")
@@ -36,14 +36,14 @@ def imprimir_resultado(coeficientes, desvio_padrao, tipo="linear"):
         print(f"{coeficientes[0]} e^{coeficientes[1]}x")
 
     if (tipo == "exponencial-produto"):
-        print(f"{coeficientes[0]} xe^{coeficientes[1]}x")
+        print(f"{coeficientes[1]} xe^{coeficientes[0]}x")
 
 
     print(f"Desvio padrao: {desvio_padrao} \n\n")
 
 
 
-def resolve_sistema_gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
+def resolve_sistema_gauss_seidel(matriz, b, x0, epsilon=1e-8, max_iter=1000):
 
     n = len(matriz)
     x = x0.copy()
@@ -65,7 +65,7 @@ def resolve_sistema_gauss_seidel(matriz, b, x0, epsilon=1e-5, max_iter=100):
         diff_rel = max(abs(x[i] - x_antigo[i]) / abs(x[i]) for i in range(n))
         
         if diff_rel < epsilon or iteracoes == max_iter:
-            return [round(xi, 3) for xi in x]
+            return [round(xi, 9) for xi in x]
         
     return None  # Falha
 
@@ -84,6 +84,9 @@ def minimos_quadrados_linear(num_pontos, pontos):
     for xy in pontos:
         somatorio_xy += xy[0] * xy[1]
 
+
+    #print([num_pontos, somatorio_x, somatorio_y])
+    #print([somatorio_x, somatorio_x2, somatorio_xy])
 
     # Calcula os coeficientes a0 e a1
     a1 = (num_pontos * somatorio_xy - somatorio_x * somatorio_y) / (num_pontos * somatorio_x2 - somatorio_x**2)
@@ -130,18 +133,18 @@ def calcular_regressao_quadratica(num_pontos, pontos):
         [somatorio_y, somatorio_xy, somatorio_x2y],
         [0, 0, 0]
     )
-    
 
     # Calcula os valores preditos y_pred
-    y_pred = [coeficientes[0] + coeficientes[1] * xi + coeficientes[2] * xi**2 for xi in x]
+    y_pred = [(coeficientes[0] + coeficientes[1] * xi + coeficientes[2] * xi**2) for xi in x]
 
     # Calcula os resíduos
     residuos = []
-    for i in range(0, 3):
+    for i in range(0, num_pontos):  # estava percorrendo de 0 até 3 só
         residuos.append(y[i] - y_pred[i])
 
     # Calcula a raiz da média quadrática dos resíduos
-    desvio_padrao = (sum(residual**2 for residual in residuos) / num_pontos)**0.5
+    desvio_padrao = (sum(residual**2 for residual in residuos) / num_pontos) ** (1/2)
+
 
     return coeficientes, desvio_padrao
 
@@ -182,7 +185,7 @@ def minimos_quadrados_produto_exponencial(num_pontos, pontos):
     # Calcula os coeficientes a0' e a1' com a função linearizada
     coeficientes_log, desvio_padrao = minimos_quadrados_linear(num_pontos, novos_pontos)
 
-    # Converte a0' para a0 e mantém a1 inalterado
+    # Converte ln de a0 para a0 e mantém a1 inalterado
     a0 = math.exp(coeficientes_log[0])
     a1 = coeficientes_log[1]
 
@@ -270,10 +273,10 @@ coeficientes, desvio = minimos_quadrados_produto_exponencial(n, pontosXY)
 imprimir_resultado(coeficientes, desvio, "exponencial-produto")
 
 
-coeficientes, desvio = minimos_quadrados_soma_exponencial(n, pontosXY)
-imprimir_resultado(coeficientes, desvio, "exponencial-soma")
+#coeficientes, desvio = minimos_quadrados_soma_exponencial(n, pontosXY)
+#imprimir_resultado(coeficientes, desvio, "exponencial-soma")
 
 
-coeficientes, desvio = minimos_quadrados_exponencial_inversa(n, pontosXY)
-imprimir_resultado(coeficientes, desvio, "exponencial-inversa")
+#coeficientes, desvio = minimos_quadrados_exponencial_inversa(n, pontosXY)
+#imprimir_resultado(coeficientes, desvio, "exponencial-inversa")
 
