@@ -1,4 +1,6 @@
 
+import numpy as np
+import matplotlib.pyplot as plt
 
 def ler_dados_de_arquivo():
     with open("entrada-pontos.txt", "r") as arquivo:
@@ -39,4 +41,24 @@ if x_teclado < pontos[0][0] or x_teclado > pontos[-1][0]:
 else:
     resultado_interpolado = calcula_por_lagrange(num_pontos, pontos, x_teclado)
     print(f"O valor interpolado em x = {x_teclado} é: {resultado_interpolado}")
+
+    
+    ###### GERANDO GRÁfico
+    ponto_x_inicial = pontos[0][0]
+    ponto_x_final = pontos[-1][0]
+
+    dominio = np.arange(ponto_x_inicial, ponto_x_final + 0.05, 0.05)
+
+    y_calculado = []
+    for i in dominio:
+        y_calculado.append(calcula_por_lagrange(num_pontos, pontos, i))
+    plt.plot(dominio, y_calculado, 'b-')
+
+    plt.plot(x_teclado, resultado_interpolado, 'g*')
+
+    x = [ponto[0] for ponto in pontos]
+    y = [ponto[1] for ponto in pontos]
+
+    plt.plot(x, y, 'ro')
+    plt.show()
 
