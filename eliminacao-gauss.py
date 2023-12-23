@@ -40,8 +40,6 @@ def pivotear_matriz(matriz):
     
     return matriz
 
-
-
 def eliminacao_gauss(matriz):
     n = len(matriz)
 
